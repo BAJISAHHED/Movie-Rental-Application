@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Rental Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .movie-list {
+            margin-top: 20px;
+        }
+        .movie-item {
+            background-color: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Available Movies</h1>
+    <div class="movie-list" id="movie-list">
+        <!-- Movie list will be populated here -->
+    </div>
+
+    <script>
+        // Fetch movies from the server and display them
+        fetch('/movies')
+            .then(response => response.json())
+            .then(movies => {
+                const movieList = document.getElementById('movie-list');
+                movies.forEach(movie => {
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
+                    movieItem.innerHTML = `${movie.title} (${movie.genre}) - Rented: ${movie.is_rented} <button onclick="rentMovie(${movie.id})">Rent</button>`;
+                    movieList.appendChild(movieItem);
+                });
+            });
+
+        function rentMovie(movieId) {
+            fetch(`/movies/${movieId}/rent`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message || data.error));
+        }
+    </script>
+</body>
+</html>
